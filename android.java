@@ -168,12 +168,78 @@ class myViewHolder extends RecyclerView.ViewHolder{
     }
 }
 
+///with FAB
+public class study_material extends AppCompatActivity {
+
+    String []data = {"2+5=7", "2-7 = -5", "3*8 = 24", "8/2 = 4"};
+    int count;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_study_material);
+
+        //------- adding items
+        List<String> items = new LinkedList<>();
+        items.add("examples");
+
+        RecyclerView recyclerView = findViewById((R.id.recyclerView));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DemoAdapter adapter = new DemoAdapter(items);
+        recyclerView.setAdapter(adapter);
+
+        findViewById(R.id.btnAddID).setOnClickListener(view -> {
+            items.add(data[count%4]);
+            count++;
+            adapter.notifyItemInserted(items.size()-1);
+        });
+
+    }
+}
+
 
 /////---------------------- NOTIFIICATIONS
 // inside some button onclick OnClickListener
  Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logoutimg);
 
+ int NOTIFICATION_ID = 234;
+ NotificationManager notificationManager = (NotificationManager) MainActivity.this.getSystemService(MainActivity.this.NOTIFICATION_SERVICE);
+ String CHANNEL_ID = "my_channel_01";
+ if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+     CHANNEL_ID = "my_channel_01";
+     CharSequence name = "my_channel";
+     String Description = "This is my channel";
+     int importance = NotificationManager.IMPORTANCE_HIGH;
+     NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+     mChannel.setDescription(Description);
+     mChannel.enableLights(true);
 
+     mChannel.enableVibration(true);
+     mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+     mChannel.setShowBadge(false);
+     notificationManager.createNotificationChannel(mChannel);
+ }
+
+ NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
+         .setSmallIcon(R.drawable.logoutimg)
+         .setLargeIcon(bitmap)
+         .setStyle(new NotificationCompat.BigPictureStyle()
+                 .bigPicture(bitmap)
+                 .bigLargeIcon(bitmap))
+         .setContentTitle("ThankYou for using the Mathom App.")
+         .setContentText("Please Share the app with your friends!");
+
+//                Intent resultIntent = new Intent(MainActivity.this, notification.class);
+ Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+ TaskStackBuilder stackBuilder = TaskStackBuilder.create(MainActivity.this);
+ stackBuilder.addParentStack(notification.class);
+ stackBuilder.addNextIntent(resultIntent);
+ PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+ builder.setContentIntent(resultPendingIntent);
+ notificationManager.notify(NOTIFICATION_ID, builder.build());
+
+ MainActivity.this.finish();
+ System.exit(0);
 
 
 ////////////// SHared Preferences--------------------------------------
@@ -242,3 +308,4 @@ public void Save(View view) {
         }
         Toast.makeText(this, "contents retrieved", Toast.LENGTH_SHORT).show();
     }
+
