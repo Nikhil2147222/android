@@ -113,6 +113,9 @@ myadapter myad  = new myadapter(recycle.this,personNames);
 rv.setLayoutManager(llm);
 rv.setAdapter(myad);
 
+// in custom add function
+myad.notifyDataSetChanged()
+
 
 // ----------in another class
 public class myadapter extends RecyclerView.Adapter {
